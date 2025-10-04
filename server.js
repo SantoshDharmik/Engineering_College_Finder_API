@@ -2,6 +2,7 @@ import express from "express"
 
 import dotenv from "dotenv"
 
+import { router } from "./routers/router.js"
 
 dotenv.config({path: "./config.env"})
 
@@ -9,6 +10,17 @@ let app = express()
 
 let port = process.env.port
 
+app.use(express.urlencoded({ extended: true}))
+
+app.use(express.json())
+
+app.use(express.static("public"))
+
+// app.get('/', (req,res) => {res.redirect("/languages/api/get-details")
+// })
+
+app.use("/colleges/api", router)
+// we can write these api all time and the continue filters
 
 app.get((req,res) => {
     console.log("someone is trying to access a 404 route !")
