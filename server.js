@@ -16,7 +16,7 @@ app.use(express.json())
 
 app.use(express.static("public"))
 
-// app.get('/', (req,res) => {res.redirect("/languages/api/get-details")
+// app.get('/', (req,res) => {res.redirect("/colleges/api/get-details")
 // })
 
 app.use("/colleges/api", router)

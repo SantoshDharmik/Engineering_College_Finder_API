@@ -17,55 +17,69 @@ let getDetails = (req, res) => {
                 method: "GET",
                 address: "localhost/colleges/api/randomCollege",
                 expectedResult: "Array"
-            }
+            },
+            {
+                method: "GET",
+                address: "localhost/colleges/api/filter?scope=value",
+                expectedResult: "Array/Null",
+                queryOptions: [
+                    "courses", "duration[in years]", "status"
+                ],
+                possibleCourses: ["Computer Science",
+                    "Mechanical", "Electrical", "Civil", "Electronics", "Chemical", "Metallurgy", "IT", "AI/ML", "Data Science", "Chemical Technology", "Oil Technology", "Food Technology", "Information Technology", "Electronics & Telecommunication", "Artificial Intelligence & Data Science"
+                ]
+
+            },
+            {
+                method: "GET",
+                address: "localhost/colleges/api/collegeName",
+                expectedResult: "Array"
+            },
         ]
     })
 }
 
 // (GET method)
 // these data is for filter the college
-const getFilterData = (req,res) => {
+const getFilterData = (req, res) => {
     try {
-         
-        let { courses,duration,status } = req.query
+
+        let { courses, duration, status } = req.query
 
         let usercourse = courses
 
-        let resultArray = colleges 
+        let resultArray = colleges
         //starts as the full languages array
 
         let queryType = ""  //empty
 
         if (!courses && !duration && !status) throw ("Filter is invalid !")
 
-// [courses part]  //if courses is exists in the query 
+        // [courses part]  //if courses is exists in the query 
         if (courses) {
             resultArray = resultArray.filter(college => {
                 return college.courses.some(element => element.toLowerCase().includes(usercourse.toLowerCase().trim()))
             })
             queryType += "/courses"
-        }    
+        }
 
 
-// [duration part]  //if duration exists in the query 
-         if (duration) {
+        // [duration part]  //if duration exists in the query 
+        if (duration) {
             resultArray = resultArray.filter(college => {
                 return Number(college.duration) === Number(duration)
             })
             queryType += "/duration"
-         } 
+        }
 
-// [status part]  //if duration exists in the query 
-        if (status) { 
+        // [status part]  //if duration exists in the query 
+        if (status) {
             resultArray = resultArray.filter((college) => {
                 return college.status.toLowerCase() == status.toLowerCase().trim()
             })
 
             queryType += "/status"
-
         }
-
-
 
         if (resultArray.length == 0) throw (`unable to find colleges based on ${queryType}`)
 
@@ -81,7 +95,7 @@ const getFilterData = (req,res) => {
         res.status(400).json({
             message: "unable to get data based on filter !",
             err,
-             possibleFilters: ["?courses","?duration"]
+            possibleFilters: ["?courses", "?duration", "?status", "?NIRF_ranking"]
         })
 
     }
@@ -90,29 +104,58 @@ const getFilterData = (req,res) => {
 
 // (GET method)
 // these is for all colleges dada 
-const getAllColleges = (req,res) => {
+const getAllColleges = (req, res) => {
     res.status(200).json({ message: `All the colleges within the dataset are`, colleges })
 }
 
 // (GET method)
 // it's used to get any random college
-const getRandomCollege = (req,res) => {
+const getRandomCollege = (req, res) => {
 
     // console.log("Total colleges:", colleges.length);
     // console.log("First college:", colleges[0]);
 
-    let randomIndex = Math.floor(Math.random()* colleges.length);
+    let randomIndex = Math.floor(Math.random() * colleges.length);
 
     let result = colleges[randomIndex];
 
     console.log("Random index:", randomIndex); //it's used for showing the actual index of data which is appear randomly
 
-    res.status(200).json({ message : "Random college you were requesting is ", result})
+    res.status(200).json({ message: "Random college you were requesting is ", result })
 
 }
 
+
+// (GET method)
+// it's used to find college by using college name
+const getCollegeName = (req, res) => {
+    try {
+
+        const { name } = req.query; // name comes from URL
+        console.log(name);
+
+        if (!name) throw "invalid name! ";
+
+        // Filter the colleges array by name (case-insensitive)
+        let college = colleges.find(
+            (c) => c.name.toLowerCase().trim() === name.toLowerCase().trim());
+
+        if (!college) throw `College with name "${name}" not found!`;
+
+        res.status(200).json({
+            message: `College found!`,
+            result: college
+        });
+
+    } catch (err) {
+        res.status(400).json({ message: "Error fetching college by name", err });
+    }
+}
+
 // export in GET method
-export {getDetails,getAllColleges,getRandomCollege,getFilterData}
+export {getDetails}
+// export in GET method
+export {getAllColleges, getRandomCollege, getFilterData, getCollegeName }
 
 // export in POST method
 

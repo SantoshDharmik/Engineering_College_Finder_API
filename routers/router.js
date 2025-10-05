@@ -2,18 +2,23 @@ import express from "express"
 
 import { getDetails, getFilterData } from "../controllers/controller.js"
 
-import { getAllColleges, getRandomCollege } from "../controllers/controller.js"
+import { getAllColleges, getRandomCollege ,getCollegeName} from "../controllers/controller.js"
 
 let router = express.Router()
-
-// GET Method router
-router.get("/all",getAllColleges)
 
 //it's helps to filtering the clg 
 router.get("/get-details", getDetails)
 
+// GET Method router for all college
+router.get("/all",getAllColleges)
+
+// GET Method router for random college
 router.get("/randomCollege", getRandomCollege)
 
+// GET Method router for filtering the collge
 router.get("/filter", getFilterData)
+
+// GET Method router for college name
+router.get("/college", getCollegeName)
 
 export {router}
