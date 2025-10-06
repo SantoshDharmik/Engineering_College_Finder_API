@@ -1,6 +1,6 @@
 import express from "express"
 
-import { getDetails, getFilterData, postAddCollege, deleteCollegeByName } from "../controllers/controller.js"
+import { getDetails, getFilterData, postAddCollege, deleteCollegeByName,updateCollegeByName,patchCollegeByName } from "../controllers/controller.js"
 
 import { getAllColleges, getRandomCollege ,getCollegeName} from "../controllers/controller.js"
 
@@ -26,5 +26,11 @@ router.post("/add-college",postAddCollege)
 
 //DELETE Method router for Deleting the collge
 router.delete("/delete-college/:name",deleteCollegeByName)
+
+//PUT Method router for Replace the whole college object by NAME
+router.put("/put-college/:name",updateCollegeByName)
+
+// PATCH method Update only specific fields of college by using NAME
+router.patch("/patch-college/:name",patchCollegeByName)
 
 export {router}

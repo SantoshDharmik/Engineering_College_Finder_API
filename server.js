@@ -25,7 +25,7 @@ app.use("/colleges/api", router)
 app.get((req,res) => {
     console.log("someone is trying to access a 404 route !")
     res.status(404).json({
-        message:"content not found ! "
+        message:"content not found !"
     })
 })
 

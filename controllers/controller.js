@@ -43,8 +43,18 @@ let getDetails = (req, res) => {
             {
                 method: "Delete",
                 address: "localhost/colleges/api/delete-college/:name",
-                expectedResult: "Array[delete a college]"
-            }
+                expectedResult: "delete a college"
+            },
+            {
+                method: "Put",
+                address: "localhost/colleges/api/put-college/:name",
+                expectedResult: "PUT is replece the hole dta which is given by admin (Replace hole data)"
+            },
+            {
+                method: "Patch",
+                address: "localhost/colleges/api/patch-college/:name",
+                expectedResult: "PATCH is chnaging some data which is given by admin (Modify some data)"
+            },
 
         ]
     })
@@ -236,6 +246,69 @@ const deleteCollegeByName = (req,res) => {
         });
     }
 }
-
 // export in DELETE method
 export { deleteCollegeByName }
+
+// (PUT method)
+// Replace the whole college object by NAME
+const updateCollegeByName = (req, res) => {
+    try {
+        const { name } = req.params; 
+        // college name from URL
+        const newCollegeData = req.body; 
+        // new college data from request body
+
+        // Find index of college by name
+        let index = colleges.findIndex(
+            (c) => c.name.toLowerCase().trim() === name.toLowerCase().trim()
+        );
+
+        if (index === -1) throw `College with name "${name}" not found!`;
+
+        // Replace the old college data with new one
+        colleges[index] = { ...newCollegeData };
+
+        res.status(200).json({
+            message: `College "${name}" updated successfully!`,
+            result: colleges[index]
+        });
+
+    } catch (err) {
+        res.status(400).json({ message: "Error updating college", err });
+    }
+};
+
+// export in PUT method
+export {updateCollegeByName}
+
+
+// (PATCH method)
+// Update only specific fields of college by NAME
+const patchCollegeByName = (req, res) => {
+    try {
+        const { name } = req.params; 
+        // college name from URL
+        const updates = req.body;    
+        // only fields to update
+
+        // Find the college
+        let college = colleges.find(
+            (c) => c.name.toLowerCase().trim() === name.toLowerCase().trim()
+        );
+
+        if (!college) throw `College with name "${name}" not found!`;
+
+        // Update only provided fields
+        Object.assign(college, updates);
+
+        res.status(200).json({
+            message: `College "${name}" patched successfully!`,
+            result: college
+        });
+
+    } catch (err) {
+        res.status(400).json({ message: "Error patching college", err });
+    }
+};
+// export in PUT method
+export {patchCollegeByName}
