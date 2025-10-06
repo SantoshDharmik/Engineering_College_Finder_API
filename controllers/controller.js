@@ -35,6 +35,17 @@ let getDetails = (req, res) => {
                 address: "localhost/colleges/api/collegeName",
                 expectedResult: "Array"
             },
+            {
+                method: "POST",
+                address: "localhost/colleges/api/add-college",
+                expectedResult: "Array[add  a new college]"
+            },
+            {
+                method: "Delete",
+                address: "localhost/colleges/api/delete-college/:name",
+                expectedResult: "Array[add  a new college]"
+            }
+
         ]
     })
 }
@@ -88,6 +99,8 @@ const getFilterData = (req, res) => {
             message: `got result based on ${queryType}`,
             resultCount: resultArray.length,
             results: resultArray
+
+
         })
 
     } catch (err) {
@@ -105,7 +118,19 @@ const getFilterData = (req, res) => {
 // (GET method)
 // these is for all colleges dada 
 const getAllColleges = (req, res) => {
-    res.status(200).json({ message: `All the colleges within the dataset are`, colleges })
+    try {
+        const resultArray = colleges; // store data we are use for count all colleges
+
+        res.status(200).json({
+            message: `All the colleges within the dataset are`, 
+        resultCount: resultArray.length,
+        results: resultArray
+        })
+        
+
+    }catch(err) {
+        res.status(500).json({ message: "Something went wrong!", err });
+    }
 }
 
 // (GET method)
@@ -153,10 +178,64 @@ const getCollegeName = (req, res) => {
 }
 
 // export in GET method
-export {getDetails}
+export { getDetails }
 // export in GET method
-export {getAllColleges, getRandomCollege, getFilterData, getCollegeName }
+export { getAllColleges, getRandomCollege, getFilterData, getCollegeName }
 
+// (post method)
+// we can add data from post method
+const postAddCollege = (req, res) => {
+    try {
+        let { name, courses, duration, fees_per_year, address, status, NIRF_ranking } = req.body
+
+        //scope has to be in array
+        if (!name || !courses || !duration || !fees_per_year || !address || !status || !NIRF_ranking) throw ("invalid?incomplete data!")
+
+        // chech the courses is an array or not
+
+        if (!Array.isArray(courses)) throw ("invalid data courses hass to be an array")
+
+        let newCollege = { name, courses, duration, fees_per_year, address, status, NIRF_ranking }
+
+        colleges.push(newCollege)
+
+        res.status(202).json({
+            message: `New college ${newCollege.name} addedd successfully !`
+        })
+
+    } catch (err) {
+        console.log('err while adding n new languages !', err)
+        res.status(400).json({ message: `unable to new language !`, err })
+    }
+}
 // export in POST method
+export { postAddCollege }
+
+// (DELETE method)
+// we can delete data from Delete method
+const deleteCollegeByName = (req,res) => {
+    try {
+        let {name} = req.params;
+
+        let index = colleges.findIndex(
+            (c) => c.name.toLowerCase() === decodeURIComponent(name).toLowerCase()
+        ); 
+
+        if (index === -1) throw(`College with name "${name}" not found!`);
+
+        let deleted = colleges.splice(index, 1);
+
+         res.status(200).json({
+            message: `College with name "${name}" deleted successfully!`,
+            deleted: deleted[0]
+        });
+    } catch (err) {
+        res.status(400).json({ 
+            message: "Unable to delete college", 
+            error: err 
+        });
+    }
+}
 
 // export in DELETE method
+export { deleteCollegeByName }

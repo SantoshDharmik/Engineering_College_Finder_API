@@ -16,11 +16,11 @@ app.use(express.json())
 
 app.use(express.static("public"))
 
-// app.get('/', (req,res) => {res.redirect("/colleges/api/get-details")
-// })
+app.get('/', (req,res) => {res.redirect("/colleges/api/get-details")
+})
 
 app.use("/colleges/api", router)
-// we can write these api all time and the continue filters
+// we can write these api all time and continue filters
 
 app.get((req,res) => {
     console.log("someone is trying to access a 404 route !")

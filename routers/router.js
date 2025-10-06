@@ -1,6 +1,6 @@
 import express from "express"
 
-import { getDetails, getFilterData } from "../controllers/controller.js"
+import { getDetails, getFilterData, postAddCollege, deleteCollegeByName } from "../controllers/controller.js"
 
 import { getAllColleges, getRandomCollege ,getCollegeName} from "../controllers/controller.js"
 
@@ -20,5 +20,11 @@ router.get("/filter", getFilterData)
 
 // GET Method router for college name
 router.get("/college", getCollegeName)
+
+//POST Method router for adding new collge
+router.post("/add-college",postAddCollege)
+
+//DELETE Method router for Deleting the collge
+router.delete("/delete-college/:name",deleteCollegeByName)
 
 export {router}
