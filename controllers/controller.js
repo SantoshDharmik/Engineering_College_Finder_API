@@ -1,7 +1,7 @@
 // import  colleges  from "../data/colleges.js"
 //these code for api conncetion which is present in the folder,that is data.
 
-import {collegesModel} from "../models/techSchema.js"
+import {collegesModel} from "../models/collegeSchema.js"
 
 let colleges = []
 
@@ -10,7 +10,7 @@ async function fetchInitialColleges() {
         colleges = await collegesModel.find({})
 
     }catch (error){
-        console.log(err)
+        console.log(error)
         colleges = []
     }
 }
@@ -142,11 +142,11 @@ const getFilterData = (req, res) => {
 
         })
 
-    } catch (err) {
-        console.log(err)
+    } catch (error) {
+        console.log(error)
         res.status(400).json({
             message: "unable to get data based on filter !",
-            err,
+            error,
             possibleFilters: ["?courses", "?duration", "?status", "?NIRF_ranking"]
         })
 
@@ -161,7 +161,11 @@ const getAllColleges = async (req,res) => {
 
         if(dataBaseColleges.lenght == 0) throw ("unable to fetch all colleges at this moment !")
 
-            res.status(200).json({ message: 'all the colleges within the dataset are.', dataBaseColleges})
+        const totalColleges = dataBaseColleges.length;  
+
+        res.status(200).json({ message: "All the colleges within the dataset.",
+            totalColleges: totalColleges,
+            data: dataBaseColleges})
 
     } catch(error){
         console.log("error while fetching colleges : ", error)
@@ -177,7 +181,7 @@ const getAllColleges = async (req,res) => {
 // it's used to get any random college
 const getRandomCollege = (req, res) => {
 
-    // console.log("Total colleges:", colleges.length);
+    console.log("Total colleges:", colleges.length);
     // console.log("First college:", colleges[0]);
 
     let randomIndex = Math.floor(Math.random() * colleges.length);
@@ -192,20 +196,20 @@ const getRandomCollege = (req, res) => {
 
 // (GET method)
 // it's used to find college by using college institude code
-const getCollegeInstitudeCode = (req,res) => {
+const getCollegeInstituteCode = (req,res) => {
     try {
-        let {institude_Code} = req.params
-        console.log(institude_Code)
+        let {institute_Code} = req.params
+        console.log(institute_Code)
 
-        if (!institude_Code) throw("Invalid Institude_Code !")
+        if (!institute_Code) throw("Invalid Institude_Code !")
 
             let result = colleges.filter((colleges) => {
-                return colleges.institute_Code == institude_Code
+                return colleges.institute_Code == institute_Code
             })
 
-        if (result.length == 0) throw( `Unable to find colleges.institude_code ${institude_Code}`)    
+        if (result.length == 0) throw( `Unable to find colleges.institude_code ${institute_Code}`)    
 
-        res.status(200).json({ message: `We have on institude_Code ${institude_Code} !`, result: result[0]})    
+        res.status(200).json({ message: `We have on institute_Code ${institute_Code} !`, result: result[0]})    
 
     } catch(error) {
         console.log(error)
@@ -235,8 +239,8 @@ const getCollegeName = (req, res) => {
             result: college
         });
 
-    } catch (err) {
-        res.status(400).json({ message: "Error fetching college by name", err });
+    } catch (error) {
+        res.status(400).json({ message: "Error fetching college by name", error });
     }
 }
 
@@ -274,41 +278,41 @@ const getCollegesBasedOnFoundedRange = (req,res) => {
     } catch (error) {
         res.status(400).json({
             message: "Unable to get data based on founded year range!",
-            err
+            error
         });
     }
 }
-
-
 
 
 // export in GET method
 export { getDetails }
 
 // export in GET method
-export { getAllColleges, getRandomCollege, getFilterData, getCollegeInstitudeCode, getCollegeName,getCollegesBasedOnFoundedRange }
+export { getAllColleges, getRandomCollege, getFilterData, getCollegeInstituteCode, getCollegeName,getCollegesBasedOnFoundedRange }
 
 // (post method)
 // we can add data from post method
 const postAddCollege = async (req, res) => {
     try {
-        let { name, courses, duration, fees_per_year, address, status, NIRF_ranking } = req.body
+        let { institute_Code, name, courses, duration, fees_per_year, address, status, NIRF_ranking, city, founded } = req.body;
 
         //scope has to be in array
-        if (!name || !courses || !duration || !fees_per_year || !address || !status || !NIRF_ranking) throw ("invalid?incomplete data!")
+         if (!institute_Code || !name || !courses || !duration || !fees_per_year || !address || !status || !NIRF_ranking || !city || !founded) throw ("invalid?incomplete data!")
 
         // chech the courses is an array or not
 
-        if (!Array.isArray(courses)) throw ("invalid data courses hass to be an array")
+        if (!Array.isArray(courses)) throw ("invalid data courses must be an array")
 
-        let newTech = new collegesModel({institude_code,name, courses, duration, fees_per_year, address, status, NIRF_ranking  })
+        let newCollege = new collegesModel({institute_Code,name,courses,status,duration,city,founded,NIRF_ranking,fees_per_year,address});
 
-        await newTech.save()
+        await newCollege.save()
 
         fetchInitialColleges()
 
+        res.status(201).json({ message: "New college added successfully!", data: newCollege });
+
     } catch (error) {
-        console.log('err while adding n new colleges !', error)
+        console.log('error while adding n new colleges !', error)
         res.status(400).json({ message: `unable to new college !`, error })
     }
 }
@@ -317,91 +321,106 @@ export { postAddCollege }
 
 // (DELETE method)
 // we can delete data from Delete method
-const deleteCollegeByName = (req,res) => {
-    try {
-        let {name} = req.params;
+const deleteInstituteByCode = async (req, res) => {
+  try {
+    const { institute_Code } = req.params; // URL se code le rahe hai
 
-        let index = colleges.findIndex(
-            (c) => c.name.toLowerCase() === decodeURIComponent(name).toLowerCase()
-        ); 
-
-        if (index === -1) throw(`College with name "${name}" not found!`);
-
-        let deleted = colleges.splice(index, 1);
-
-         res.status(200).json({
-            message: `College with name "${name}" deleted successfully!`,
-            deleted: deleted[0]
-        });
-    } catch (err) {
-        res.status(400).json({ 
-            message: "Unable to delete college", 
-            error: err 
-        });
+    // Check if institute exists with given institute_Code
+    const existingInstitute = await collegesModel.findOne({ institute_Code });
+    if (!existingInstitute) {
+      return res.status(404).json({
+        message: "Institute not found with this institute_Code!"
+      });
     }
-}
-// export in DELETE method
-export { deleteCollegeByName }
+    // Delete the institute
+    const deletedInstitute = await collegesModel.findOneAndDelete({ institute_Code });
 
-// (PUT method)
-// Replace the whole college object by NAME
-const updateCollegeByName = (req, res) => {
-    try {
-        const { name } = req.params; 
-        // college name from URL
-        const newCollegeData = req.body; 
-        // new college data from request body
+    res.status(200).json({
+      message: "Institute deleted successfully!",
+      deleted: deletedInstitute
+    });
 
-        // Find index of college by name
-        let index = colleges.findIndex(
-            (c) => c.name.toLowerCase().trim() === name.toLowerCase().trim()
-        );
-
-        if (index === -1) throw `College with name "${name}" not found!`;
-
-        // Replace the old college data with new one
-        colleges[index] = { ...newCollegeData };
-
-        res.status(200).json({
-            message: `College "${name}" updated successfully!`,
-            result: colleges[index]
-        });
-
-    } catch (err) {
-        res.status(400).json({ message: "Error updating college", err });
-    }
+  } catch (error) {
+    console.error("Error while deleting institute:", error);
+    res.status(400).json({
+      message: "Unable to delete institute!",
+      error: error.message
+    });
+  }
 };
 
-// export in PUT method
-export {updateCollegeByName}
+export { deleteInstituteByCode };
 
+
+// (PUT method) problem
+// Replace the whole college object by institute_Code
+const updateInstituteByCode = async (req, res) => {
+  try {
+    const { institute_Code } = req.params; // URL parameter
+    const newInstituteData = req.body; // request body
+
+    // Check if institute exists
+    const existingInstitute = await collegesModel.findOne({ institute_Code });
+    if (!existingInstitute) {
+      return res.status(404).json({
+        message: `Institute with code "${institute_Code}" not found!`
+      });
+    }
+
+    // Replace entire document (PUT behavior)
+    const updatedInstitute = await collegesModel.findOneAndUpdate(
+      { institute_Code },
+      { $set: newInstituteData },
+      { new: true } // return the updated document
+    );
+
+    res.status(200).json({
+      message: `Institute with code "${institute_Code}" updated successfully!`,
+      result: updatedInstitute
+    });
+
+  } catch (error) {
+    console.error("Error updating institute:", error);
+    res.status(400).json({
+      message: "Error updating institute",
+      error: error.message
+    });
+  }
+};
+export { updateInstituteByCode };
 
 // (PATCH method)
 // Update only specific fields of college by NAME
-const patchCollegeByName = (req, res) => {
+const patchCollegeByName = async (req, res) => {
     try {
-        const { name } = req.params; 
-        // college name from URL
-        const updates = req.body;    
-        // only fields to update
+        const { institute_Code } = req.params; // URL se code le rahe hai
+        const updates = req.body; 
+        // body me jo update bheja gaya hai
 
-        // Find the college
-        let college = colleges.find(
-            (c) => c.name.toLowerCase().trim() === name.toLowerCase().trim()
+        // Check if college exists with given institute_Code
+        const existingCollege = await collegesModel.findOne({ institute_Code });
+        if (!existingCollege) {
+            return res.status(404).json({ message: "College not found with this institute_Code!" });
+        }
+
+        // Update only given fields (PATCH behavior)
+        const updatedCollege = await collegesModel.findOneAndUpdate(
+            { institute_Code },
+            { $set: updates },
+            { new: true } // return updated document
         );
 
-        if (!college) throw `College with name "${name}" not found!`;
-
-        // Update only provided fields
-        Object.assign(college, updates);
-
         res.status(200).json({
-            message: `College "${name}" patched successfully!`,
-            result: college
+            message: "College updated successfully!",
+            data: updatedCollege
         });
 
-    } catch (err) {
-        res.status(400).json({ message: "Error patching college", err });
+    } catch (error) {
+        console.error("Error while updating college:", error);
+        res.status(400).json({
+            message: "Unable to update college!",
+            error: error.message
+        });
     }
 };
 // export in PUT method

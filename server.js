@@ -8,6 +8,8 @@ import mongoose from "mongoose"
 
 import { router } from "./routers/router.js"
 
+import { userRouter } from "./routers/userRouter.js"
+
 dotenv.config({path: "./config.env"})
 
 let app = express()
@@ -24,7 +26,10 @@ app.get('/', (req,res) => {res.redirect("/colleges/api/get-details")
 })
 
 app.use("/colleges/api", router)
-// we can write these api all time and continue filters
+// we can create these common router to perform all oiptions
+
+app.use("/users/api", userRouter)
+// we can create these router to perform register and login oiptions
 
 app.get((req,res) => {
     console.log("someone is trying to access a 404 route !")
