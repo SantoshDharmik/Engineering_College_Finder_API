@@ -28,7 +28,7 @@ app.get('/', (req,res) => {res.redirect("/colleges/api/get-details")
 app.use("/colleges/api", router)
 // we can create these common router to perform all oiptions
 
-app.use("/users/api", userRouter)
+app.use("/user/api", userRouter)
 // we can create these router to perform register and login oiptions
 
 app.get((req,res) => {

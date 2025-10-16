@@ -1,5 +1,7 @@
 import express from "express"
 
+import {checkAdmin} from "../middlewares/checkAdmin.js"
+
 import { getDetails, getFilterData, postAddCollege, deleteInstituteByCode,updateInstituteByCode,patchCollegeByName} from "../controllers/controller.js"
 
 import { getAllColleges, getRandomCollege ,getCollegeName,getCollegeInstituteCode,getCollegesBasedOnFoundedRange } from "../controllers/controller.js"
@@ -10,7 +12,7 @@ let router = express.Router()
 router.get("/get-details", getDetails)
 
 // GET Method router for all college
-router.get("/all",getAllColleges)
+router.get("/all",checkAdmin,getAllColleges)
 
 // GET Method router for random college
 router.get("/randomCollege", getRandomCollege)
@@ -28,15 +30,15 @@ router.get("/collegeName/:name", getCollegeName)
 router.get("/collegeFounded/:start/:end", getCollegesBasedOnFoundedRange)
 
 //POST Method router for adding new collge
-router.post("/add-college",postAddCollege)
+router.post("/add-college",checkAdmin,postAddCollege)
 
 //DELETE Method router for Deleting the collge
-router.delete("/delete-college/:institute_Code",deleteInstituteByCode)
+router.delete("/delete-college/:institute_Code",checkAdmin,deleteInstituteByCode)
 
 //PUT Method router for Replace the whole college object by NAME
-router.put("/put-college/:institute_Code",updateInstituteByCode)
+router.put("/put-college/:institute_Code",checkAdmin,updateInstituteByCode)
 
 // PATCH method Update only specific fields of college by using NAME
-router.patch("/patch-college/:institute_Code",patchCollegeByName)
+router.patch("/patch-college/:institute_Code",checkAdmin,patchCollegeByName)
 
 export {router}

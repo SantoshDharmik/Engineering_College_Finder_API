@@ -26,10 +26,6 @@ let usersSchema = mongoose.Schema({
         type: Object,
         require: true,
         default: Date.now
-    },
-    addedLanguges: {
-        type: Array,
-        default: []
     }
 })
 
