@@ -1,6 +1,7 @@
 # server
 Server/node_modules
 Server/package-lock.json
+Server/package.json
 Server/config.env
 
 config.env
