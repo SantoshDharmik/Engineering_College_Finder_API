@@ -112,6 +112,11 @@ Deploy on Render / Vercel / Railway
 💼 LinkedIn (https://www.linkedin.com/in/santosh-dharmik1728/)  
 💻 GitHub (https://github.com/SantoshDharmik)
 
+
+[![GitHub](https://img.shields.io/badge/GitHub-000?style=flat-square&logo=github&logoColor=white)](https://github.com/SantoshDharmik)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/santosh-dharmik1728/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-%23ff4088?style=flat-square&logo=vercel&logoColor=white)](https://your-portfolio-link.com)
+
 💡 Author
 
 Developed by Santosh Dharmik
