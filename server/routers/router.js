@@ -21,7 +21,7 @@ router.get("/randomCollege", getRandomCollege)
 router.get("/filter", getFilterData)
 
 // GET Method router for college institude_code
-router.get("/collegeCode/:institute_Code",getCollegeInstituteCode)
+router.get("/collegeCode/:institute_Code", getCollegeInstituteCode)
 
 // GET Method router for college name
 router.get("/collegeName/:name", getCollegeName)

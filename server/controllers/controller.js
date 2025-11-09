@@ -147,7 +147,7 @@ const getFilterData = (req, res) => {
         res.status(400).json({
             message: "unable to get data based on filter !",
             error,
-            possibleFilters: ["?courses", "?duration", "?status", "?NIRF_ranking"]
+            possibleFilters: ["?courses", "?duration", "?status", "?city"]
         })
 
     }
