@@ -109,8 +109,8 @@ Deploy on Render / Vercel / Railway
 
 🤝 Connect With Me
 
-💼 LinkedIn (https://www.linkedin.com/in/santosh-dharmik1728/)  
-💻 GitHub (https://github.com/SantoshDharmik)
+💼 LinkedIn (##https://www.linkedin.com/in/santosh-dharmik1728/)  
+💻 GitHub (##https://github.com/SantoshDharmik)
 
 
 💡 Author
